@@ -1,0 +1,56 @@
+	public void setData(String fileImg, String fileLabels){
+		try {
+			
+			// open file containing images
+			System.out.println("open "+PATH+fileImg);
+			DataInputStream dataFile = new DataInputStream(new BufferedInputStream(new FileInputStream(PATH+fileImg)));
+			
+			// read property numbers
+			int magicNumber = dataFile.readInt();
+	        	int nbImages = dataFile.readInt();
+	       		size_y = dataFile.readInt();
+	        	size_x = dataFile.readInt();
+
+	        	System.out.println("magic number is " + magicNumber);
+	        	System.out.println("number of items is " + nbImages);
+	        	System.out.println("number of rows is: " + size_y);
+	        	System.out.println("number of cols is: " + size_x);
+	        
+	        
+	        	// initialize the image matrix
+	        	int nbPixels=size_x*size_y;
+	        	matrixImages=new float[nbImages][nbPixels];
+	        
+	        	// write images in the matrix (one image per matrix line)
+	        	for (int i=0;i<nbImages;i++){
+	        		for (int j=0;j<nbPixels;j++){
+	        			matrixImages[i][j]=((float)dataFile.readUnsignedByte())/255;
+	        		}
+	        	}
+	        
+	        	// close the image file
+	        	dataFile.close();
+			
+	        	// open file containing results
+			System.out.println("open "+PATH+fileImg);
+			DataInputStream labelFile = new DataInputStream(new BufferedInputStream(new FileInputStream(PATH+fileLabels)));
+			
+			// read property numbers
+			int labelMagicNumber = labelFile.readInt();
+		    	int nbTests = labelFile.readInt();
+	
+		    	System.out.println("labels magic number is: " + labelMagicNumber);
+		    	System.out.println("number of labels is: " + nbTests);
+	
+		    	// initialize the result vector and write results
+		    	matrixLabels=new int[nbTests];
+		    	for (int i=0;i<nbTests;i++){
+		    		matrixLabels[i]=labelFile.readUnsignedByte();
+		    	}
+		    
+		    	// close the result file
+		    	labelFile.close();
+		
+		} catch (IOException e) {System.out.print(e);}
+		
+	}
